@@ -1,8 +1,6 @@
 package com.example.fragmentdemo;
 
 
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -31,23 +29,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class AuswahlFragment extends ListFragment {
-        private static final String STR_ZULETZT_SELEKTIERT="zuletztSelektiert";
+        private static final String STR_ZULETZT_SELEKTIERT = "zuletztSelektiert";
         boolean zweiSpaltenModus;
         int zuletztSelektiert = 0;
 
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            setListAdapter(new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_activated_1,
-                    new String[]{"eins","zwei","drei"}));
+            setListAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_activated_1,
+                    new String[]{"eins", "zwei", "drei"}));
 
             View detailsFrame = getActivity().findViewById(R.id.details);
             zweiSpaltenModus = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-            
-            if(savedInstanceState!=null){
-                zuletztSelektiert=savedInstanceState.getInt(STR_ZULETZT_SELEKTIERT,0);
+
+            if (savedInstanceState != null) {
+                zuletztSelektiert = savedInstanceState.getInt(STR_ZULETZT_SELEKTIERT, 0);
             }
-            if(zweiSpaltenModus){
+            if (zweiSpaltenModus) {
                 getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 detailsAnzeigen(zuletztSelektiert);
             }
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSaveInstanceState(@NonNull Bundle outState) {
             super.onSaveInstanceState(outState);
-            outState.putInt(STR_ZULETZT_SELEKTIERT,zuletztSelektiert);
+            outState.putInt(STR_ZULETZT_SELEKTIERT, zuletztSelektiert);
         }
 
         @Override
@@ -65,73 +63,74 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void detailsAnzeigen(int zuletztSelektiert) {
-            this.zuletztSelektiert=zuletztSelektiert;
-            if(zweiSpaltenModus){
-                getListView().setItemChecked(zuletztSelektiert,true);
+            this.zuletztSelektiert = zuletztSelektiert;
+            if (zweiSpaltenModus) {
+                getListView().setItemChecked(zuletztSelektiert, true);
                 DetailFragment details = (DetailFragment) getFragmentManager().findFragmentById(R.id.details);
-                if(details!=null || details.getIndex()!=zuletztSelektiert){
+                if (details == null || details.getIndex() != zuletztSelektiert) {
                     details = DetailFragment.newInstance(zuletztSelektiert);
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.details,details);
+                    fragmentTransaction.replace(R.id.details, details);
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.commit();
-                }else{
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(),DetailsActivity.class);
-                    intent.putExtra(DetailFragment.INDEX, zuletztSelektiert);
-                    startActivity(intent);
                 }
+            } else {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), DetailsActivity.class);
+                intent.putExtra(DetailFragment.INDEX, zuletztSelektiert);
+                startActivity(intent);
             }
         }
     }
+}
 
-    public static class DetailFragment extends Fragment {
+public static class DetailFragment extends Fragment {
 
-        public static final String INDEX = "index";
+    public static final String INDEX = "index";
 
-        public static DetailFragment newInstance(int index) {
-            DetailFragment fragment = new DetailFragment();
-            Bundle args = new Bundle();
-            args.putInt(INDEX,index);
-            fragment.setArguments(args);
-            return fragment;
+    public static DetailFragment newInstance(int index) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putInt(INDEX, index);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public int getIndex() {
+        return getArguments().getInt(INDEX, 0);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ScrollView scrollView = null;
+        if (container != null) {
+            scrollView = new ScrollView(getActivity());
+            TextView textView = new TextView(getActivity());
+            scrollView.addView(textView);
+            textView.setText("Element #" + (1 + getIndex()) + " ist sichtbar");
         }
+        return scrollView;
+    }
+}
 
-        public int getIndex() {
-            return getArguments().getInt(INDEX,0);
+
+public static class DetailsActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            finish();
+            return;
         }
-
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            ScrollView scrollView = null;
-            if(container != null){
-                scrollView = new ScrollView(getActivity());
-                TextView textView = new TextView(getActivity());
-                scrollView.addView(textView);
-                textView.setText("Element #" + (1+getIndex())+ " ist sichtbar");
-            }
-            return scrollView;
+        if (savedInstanceState == null) {
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction().add(android.R.id.content, detailFragment).commit();
         }
     }
 
 
-    public static class DetailsActivity extends AppCompatActivity{
-
-        @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                finish();
-                return;
-            }
-            if(savedInstanceState == null){
-                DetailFragment detailFragment = new DetailFragment();
-                detailFragment.setArguments(getIntent().getExtras());
-                getSupportFragmentManager().beginTransaction().add(android.R.id.content,detailFragment).commit();
-            }
-        }
-
-
-    }
+}
 }
