@@ -45,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 zuletztSelektiert = savedInstanceState.getInt(STR_ZULETZT_SELEKTIERT, 0);
             }
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            getListView().setItemChecked(zuletztSelektiert,false);
             if (zweiSpaltenModus) {
-                getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
                 detailsAnzeigen(zuletztSelektiert);
             }
         }
