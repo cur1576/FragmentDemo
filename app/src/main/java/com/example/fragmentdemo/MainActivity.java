@@ -82,55 +82,60 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-}
 
-public static class DetailFragment extends Fragment {
 
-    public static final String INDEX = "index";
+    public static class DetailFragment extends Fragment {
 
-    public static DetailFragment newInstance(int index) {
-        DetailFragment fragment = new DetailFragment();
-        Bundle args = new Bundle();
-        args.putInt(INDEX, index);
-        fragment.setArguments(args);
-        return fragment;
-    }
+        public static final String INDEX = "index";
 
-    public int getIndex() {
-        return getArguments().getInt(INDEX, 0);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ScrollView scrollView = null;
-        if (container != null) {
-            scrollView = new ScrollView(getActivity());
-            TextView textView = new TextView(getActivity());
-            scrollView.addView(textView);
-            textView.setText("Element #" + (1 + getIndex()) + " ist sichtbar");
+        public static DetailFragment newInstance(int index) {
+            DetailFragment fragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putInt(INDEX, index);
+            fragment.setArguments(args);
+            return fragment;
         }
-        return scrollView;
-    }
-}
 
-
-public static class DetailsActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            finish();
-            return;
+        public int getIndex() {
+            return getArguments().getInt(INDEX, 0);
         }
-        if (savedInstanceState == null) {
-            DetailFragment detailFragment = new DetailFragment();
-            detailFragment.setArguments(getIntent().getExtras());
-            getSupportFragmentManager().beginTransaction().add(android.R.id.content, detailFragment).commit();
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            ScrollView scrollView = null;
+            if (container != null) {
+                scrollView = new ScrollView(getActivity());
+                TextView textView = new TextView(getActivity());
+                scrollView.addView(textView);
+                textView.setText("Element #" + (1 + getIndex()) + " ist sichtbar");
+            }
+            return scrollView;
         }
     }
 
 
+    public static class DetailsActivity extends AppCompatActivity {
+
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                finish();
+                return;
+            }
+            if (savedInstanceState == null) {
+                DetailFragment detailFragment = new DetailFragment();
+                detailFragment.setArguments(getIntent().getExtras());
+                getSupportFragmentManager().beginTransaction().add(android.R.id.content, detailFragment).commit();
+            }
+        }
+
+
+    }
+
+
 }
-}
+
+
+
