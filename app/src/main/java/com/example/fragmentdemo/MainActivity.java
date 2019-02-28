@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 zuletztSelektiert = savedInstanceState.getInt(STR_ZULETZT_SELEKTIERT, 0);
             }
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            getListView().setItemChecked(zuletztSelektiert,false);
-            if (zweiSpaltenModus) {
 
+
+            if (zweiSpaltenModus) {
+                getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 detailsAnzeigen(zuletztSelektiert);
             }
         }
@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         private void detailsAnzeigen(int index) {
             this.zuletztSelektiert = index;
             if (zweiSpaltenModus) {
-                getListView().setItemChecked(index, true);
+                getListView().post(() -> getListView().setItemChecked(index, true));
+
                 DetailFragment details = (DetailFragment) getFragmentManager().findFragmentById(R.id.details);
                 if (details == null || details.getIndex() != index) {
                     details = DetailFragment.newInstance(index);
