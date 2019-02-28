@@ -5,6 +5,7 @@ package com.example.fragmentdemo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -50,6 +51,17 @@ public class MainActivity extends AppCompatActivity {
                 getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 detailsAnzeigen(zuletztSelektiert);
             }
+        }
+
+        @Override
+        public void onSaveInstanceState(@NonNull Bundle outState) {
+            super.onSaveInstanceState(outState);
+            outState.putInt(STR_ZULETZT_SELEKTIERT,zuletztSelektiert);
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            detailsAnzeigen(position);
         }
 
         private void detailsAnzeigen(int zuletztSelektiert) {
@@ -105,6 +117,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static class DetailsActivity extends AppCompatActivity{
-        
+
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                finish();
+                return;
+            }
+            if(savedInstanceState == null){
+                DetailFragment detailFragment = new DetailFragment();
+                detailFragment.setArguments(getIntent().getExtras());
+                getSupportFragmentManager().beginTransaction().add(android.R.id.content,detailFragment).commit();
+            }
+        }
+
+
     }
 }
