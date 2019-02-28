@@ -64,13 +64,13 @@ public class MainActivity extends AppCompatActivity {
             detailsAnzeigen(position);
         }
 
-        private void detailsAnzeigen(int zuletztSelektiert) {
-            this.zuletztSelektiert = zuletztSelektiert;
+        private void detailsAnzeigen(int index) {
+            this.zuletztSelektiert = index;
             if (zweiSpaltenModus) {
-                getListView().setItemChecked(zuletztSelektiert, true);
+                getListView().setItemChecked(index, true);
                 DetailFragment details = (DetailFragment) getFragmentManager().findFragmentById(R.id.details);
-                if (details == null || details.getIndex() != zuletztSelektiert) {
-                    details = DetailFragment.newInstance(zuletztSelektiert);
+                if (details == null || details.getIndex() != index) {
+                    details = DetailFragment.newInstance(index);
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.details, details);
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), DetailsActivity.class);
-                intent.putExtra(DetailFragment.INDEX, zuletztSelektiert);
+                intent.putExtra(DetailFragment.INDEX, index);
                 startActivity(intent);
             }
         }
